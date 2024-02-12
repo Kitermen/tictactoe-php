@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pl-PL">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            box-sizing: border-box;   
+        }
+        #x,#o{
+            cursor: pointer;
+        }
+        .game{
+            display: flex;
+            width: 300px;
+            flex-wrap: wrap;
+            position: absolute;
+            left: 50%;
+            margin-left: -150px;
+        }
+        .box{
+            width: 100px;
+            height: 100px;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+        <h1 style="text-align:center" id="header">Wybierz gracza: <span id="x">X</span> <span id="o">O</span></h1>
+        <div class="game">
+            <div class="box" id="1" style="border-left:none; border-top:none"></div>
+            <div class="box" id="2" style="border-top:none"></div>
+            <div class="box" id="3" style="border-right:none; border-top:none"></div>
+            <div class="box" id="4" style="border-left:none;"></div>
+            <div class="box" id="5" ></div>
+            <div class="box" id="6" style="border-right:none"></div>
+            <div class="box" id="7" style="border-left:none; border-bottom:none"></div>
+            <div class="box" id="8" style="border-bottom:none"></div>
+            <div class="box" id="9" style="border-right:none; border-bottom:none"></div>
+        </div>
+        <script>
+            const x = document.getElementById('x');
+            const o = document.getElementById('o');
+           
+
+            function refresh(){
+                const xhttp = new XMLHttpRequest(); xhttp.open("POST", "gra.php", true);
+                xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xhttp.send();
+
+                xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200){
+                    console.log(this.responseText);
+                    const ob = JSON.parse(this.responseText)
+                    console.log(ob);
+                }                
+            };
+            }
+            refresh()
+
+
+
+
+
+
+            const xhttp = new XMLHttpRequest(); xhttp.open("POST", "gra.php", true);
+            const header = document.getElementById('header')
+            let player = 0
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            // xhttp.send(encodeURIComponent(name)); // rawurldecode 
+            x.onclick = ()=>{
+                if (player == 0){
+                    player = 1
+                } else {
+                    player = 2
+                }
+                xhttp.send(`name=X&player=${player}`);
+            }
+            o.onclick = ()=>{
+                if (player == 0){
+                    player = 1
+                } else {
+                    player = 2
+                }
+                xhttp.send(`name=O&player=${player}`);
+            }
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200){
+                    console.log(this.responseText);
+                    const ob = JSON.parse(this.responseText)
+                    console.log(ob);
+                    header.innerHTML = 'Wybrałes: ' + ob.name
+                }                
+            };
+            
+           
+        </script>
+        
+</body>
+</html>
