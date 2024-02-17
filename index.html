@@ -43,59 +43,46 @@
         <script>
             const x = document.getElementById('x');
             const o = document.getElementById('o');
-           
 
-            function refresh(){
-                const xhttp = new XMLHttpRequest(); xhttp.open("POST", "gra.php", true);
-                xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                xhttp.send();
+            let xo = null;
 
-                xhttp.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200){
-                    console.log(this.responseText);
-                    const ob = JSON.parse(this.responseText)
-                    console.log(ob);
-                }                
-            };
-            }
-            refresh()
-
-
-
-
-
-
-            const xhttp = new XMLHttpRequest(); xhttp.open("POST", "gra.php", true);
-            const header = document.getElementById('header')
-            let player = 0
-            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            // xhttp.send(encodeURIComponent(name)); // rawurldecode 
-            x.onclick = ()=>{
-                if (player == 0){
-                    player = 1
-                } else {
-                    player = 2
+            function refresh(data = {}){
+                const body = new FormData();
+                for(const [key, value] of Object.entries(data)){
+                    body.append(key, value);
                 }
-                xhttp.send(`name=X&player=${player}`);
+
+                fetch('./index.php', {
+                    method: "POST", body
+                })
+                .then(res => res.json())
+                .then(snap => {
+                    if(!xo && (snap.X != '0' || snap.O != '0')){
+                        if(snap.X == '0' && snap.O == '0') return;
+
+                        const shape = snap.X == '0' ? 'X' : 'O';
+                        clickedShape(shape);
+                    }
+                    console.log(snap);
+                })
             }
-            o.onclick = ()=>{
-                if (player == 0){
-                    player = 1
-                } else {
-                    player = 2
-                }
-                xhttp.send(`name=O&player=${player}`);
+            refresh();
+            setInterval(refresh, 1000);
+
+            function clickedShape(shape){
+                refresh({selected: shape});
+                xo = shape;
             }
-            xhttp.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200){
-                    console.log(this.responseText);
-                    const ob = JSON.parse(this.responseText)
-                    console.log(ob);
-                    header.innerHTML = 'Wybrałes: ' + ob.name
-                }                
-            };
-            
-           
+
+            o.onclick = ()=>clickedShape('O');         
+            x.onclick = ()=>clickedShape('X');
+
+            const boxes = new Array(9).fill(0).map((el,ind) =>{
+                const div = document.getElementById(ind+1);
+                div.onclick = ()=>refresh({position: ind});
+                return div;
+            })
+            console.log(boxes);
         </script>
         
 </body>
