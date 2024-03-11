@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-        <h1 style="text-align:center" id="header">Wybierz gracza: <span id="x">X</span> <span id="o">O</span></h1>
+        <h1 style="text-align: center" id="header">Wybierz gracza: <span id="x">X</span> <span id="o">O</span></h1>
         <div class="game">
             <div class="box" id="1" style="border-left:none; border-top:none"></div>
             <div class="box" id="2" style="border-top:none"></div>
@@ -21,6 +21,60 @@
             <div class="box" id="9" style="border-right:none; border-bottom:none"></div>
         </div>
 
-    <script defer src="main.js"></script>      
+    <script>
+        const x = document.getElementById('x');
+        const o = document.getElementById('o');
+        const header = document.getElementById("header");
+
+        let xo = null, boxes;
+
+
+        function refresh(data = {}){
+            const body = new FormData();
+            for(const [key, value] of Object.entries(data)){
+                
+                body.append(key, value);
+                console.log(body);
+            }
+
+            fetch('./index.php', {
+                method: "POST", body
+            })
+            .then(res => res.json())
+            .then(snap => {
+                console.log(snap);
+                if(!xo && (snap.X != '0' || snap.O != '0') && !(snap.X == '0' && snap.O == '0')){
+                    const shape = snap.X == '0' ? 'X' : 'O';
+                    console.log(shape);
+                    clickedShape(shape);
+                }
+                snap.state.split("").forEach((element, ind) => {
+                    boxes[ind].innerHTML = element == '1' ? 'O' : element == '2' ? 'X' : '';
+                    
+                });
+            })
+        }
+        setInterval(refresh, 800);
+
+
+        function clickedShape(shape){
+            refresh({selected: shape});
+            header.innerHTML = `Grasz jako ${shape}.`;
+            xo = shape;
+        }
+
+
+        o.addEventListener("click", ()=>clickedShape('O'));         
+        x.addEventListener("click", ()=>clickedShape('X'));  
+
+
+        boxes = new Array(9).fill(0).map((el, ind) =>{
+            const div = document.getElementById(ind + 1);
+            div.classList.add("plate");
+            div.onclick = ()=>refresh({position: ind});
+            return div;
+        });
+        // console.log(boxes);
+    </script>      
 </body>
 </html>

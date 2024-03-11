@@ -9,7 +9,13 @@ $conn = @mysqli_connect("localhost", "root", "", "tictactoe");
 
     $data = $conn->query("SELECT * FROM `stats` WHERE `id` = 1");
     $row = $data->fetch_assoc();
-
+    // print_r($row['id']);
+    // if($row['id'] == 2){
+    //     echo "ja";
+    // }
+    // else{
+    //     echo "nein";
+    // }
     // while($row = $data->fetch_assoc()){
     //     $row['id'];
     // }
@@ -26,14 +32,19 @@ $conn = @mysqli_connect("localhost", "root", "", "tictactoe");
     }
 
     if(isset($_POST["position"])){
-        $pos = intval($_POST["position"]);
-        $xo = $row['O'] == $ssid ? '1' : '2';
-        if($row['last_turn'] != $xo){
-            $state = $row['state'];
-            if($state[$pos] == '0'){
-              $state[$pos] = $xo;
-              $conn->query("UPDATE `stats` SET `state` = '$state', `last_turn` = '$xo' WHERE `id` = 1");
-            } 
+        if($row['O'] == "0" || $row['X'] == "0"){
+            exit;
+        }
+        else{
+            $pos = intval($_POST["position"]);
+            $xo = $row['O'] == $ssid ? '1' : '2';
+            if($row['last_turn'] != $xo){
+                $state = $row['state'];
+                if($state[$pos] == '0'){
+                  $state[$pos] = $xo;
+                  $conn->query("UPDATE `stats` SET `state` = '$state', `last_turn` = '$xo' WHERE `id` = 1");
+                } 
+            }
         }
     }
     
