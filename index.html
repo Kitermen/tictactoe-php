@@ -5,11 +5,26 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        *{
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            font-weight: bold;
+            box-sizing: border-box;
+        }
+
+        h2{
+            margin-bottom: 70px;
+        }
+
+        div.plate{
+            padding-top: 30px;
+            font-size: 35px;
+        }
+    </style>
 </head>
 <body>
         <h1 style="text-align: center" id="header">Wybierz gracza: <span id="x">X</span> <span id="o">O</span></h1>
-        <h3 style="text-align: center" id="move_alert"></h3>
+        <h2 style="text-align: center" id="move_alert"></h3>
         <div class="game">
             <div class="box" id="1" style="border-left:none; border-top:none"></div>
             <div class="box" id="2" style="border-top:none"></div>
@@ -29,6 +44,19 @@
         const move = document.getElementById("move_alert");
 
         let xo = null, boxes;
+
+
+        function clickHandler(event) {
+            const ind = parseInt(event.target.id) - 1;
+            refresh({position: ind});
+        }
+
+        function removeEventListeners() {
+            boxes.forEach(div => {
+                div.removeEventListener("click", clickHandler);
+            });
+        }
+
 
         function refresh(data = {}){
             const body = new FormData();
@@ -52,22 +80,30 @@
                 snap.state.split("").forEach((element, ind) => {
                     boxes[ind].innerHTML = element == "1" ? "O" : element == "2" ? "X" : "";
                 });
-                const x = 0;
-                if(x){
-                    console.log("bruh w tę grę");
-                }
+
                 switch(snap.last_turn){
                     case "1":
-                        xo == "X" ? move.innerHTML = "Twój ruch" : move.innerHTML = "Czekaj na ruch przeciwnika";
+                        xo == "X" ? move.innerHTML = "-&nbsp;Twój ruch&nbsp;-" : move.innerHTML = "-&nbsp;Czekaj na ruch przeciwnika&nbsp;-";
                     break;
                     
                     case "2":
-                        xo == "O" ? move.innerHTML = "Twój ruch" : move.innerHTML = "Czekaj na ruch przeciwnika";
+                        xo == "O" ? move.innerHTML = "-&nbsp;Twój ruch&nbsp;-" : move.innerHTML = "-&nbsp;Czekaj na ruch przeciwnika&nbsp;-";
                     break;
+                }
+
+                let mark = snap.state;
+                if((mark[0] == mark[1] && mark[1] == mark[2] && mark[0] != "0") || (mark[3] == mark[4] && mark[4] == mark[5] && mark[3] != "0")
+                || (mark[6] == mark[7] && mark[7] == mark[8] && mark[6] != "0") || (mark[0] == mark[3] && mark[3] == mark[6] && mark[0] != "0") 
+                || (mark[1] == mark[4] && mark[4] == mark[7] && mark[1] != "0") || (mark[2] == mark[5] && mark[5] == mark[8] && mark[2] != "0")
+                || (mark[0] == mark[4] && mark[4] == mark[8] && mark[0] != "0") || (mark[2] == mark[4] && mark[4] == mark[6] && mark[2] != "0")){
+                    removeEventListeners()
+                    move.innerHTML = "";
+                    snap.last_turn == "1" ? header.innerHTML = `Zwyciężają kółka.` : header.innerHTML = `Zwyciężają krzyżyki.`;
+                    const doscTego = clearInterval(render);
                 }
             })
         }
-        setInterval(refresh, 500);
+        const render = setInterval(refresh, 500);
 
 
         function clickedShape(shape, secondShape){
@@ -85,13 +121,14 @@
         x.addEventListener("click", ()=>clickedShape("X"));  
 
 
-        boxes = new Array(9).fill(0).map((el, ind) =>{
+        boxes = new Array(9).fill(0).map((el, ind) => {
             const div = document.getElementById(ind + 1);
             div.classList.add("plate");
-            div.onclick = ()=>refresh({position: ind});
+            div.addEventListener("click", clickHandler);
             return div;
         });
-        // console.log(boxes);
+
+
     </script>      
 </body>
 </html>
