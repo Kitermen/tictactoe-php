@@ -9,6 +9,7 @@
 </head>
 <body>
         <h1 style="text-align: center" id="header">Wybierz gracza: <span id="x">X</span> <span id="o">O</span></h1>
+        <h3 style="text-align: center" id="move_alert"></h3>
         <div class="game">
             <div class="box" id="1" style="border-left:none; border-top:none"></div>
             <div class="box" id="2" style="border-top:none"></div>
@@ -22,50 +23,66 @@
         </div>
 
     <script>
-        const x = document.getElementById('x');
-        const o = document.getElementById('o');
+        const x = document.getElementById("x");
+        const o = document.getElementById("o");
         const header = document.getElementById("header");
+        const move = document.getElementById("move_alert");
 
         let xo = null, boxes;
-
 
         function refresh(data = {}){
             const body = new FormData();
             for(const [key, value] of Object.entries(data)){
-                
                 body.append(key, value);
                 console.log(body);
             }
 
-            fetch('./index.php', {
+            fetch("./index.php", {
                 method: "POST", body
             })
             .then(res => res.json())
             .then(snap => {
                 console.log(snap);
-                if(!xo && (snap.X != '0' || snap.O != '0') && !(snap.X == '0' && snap.O == '0')){
-                    const shape = snap.X == '0' ? 'X' : 'O';
-                    console.log(shape);
-                    clickedShape(shape);
+                console.log(xo);
+                if(!xo && (snap.X != "0" || snap.O != "0") && !(snap.X == "0" && snap.O == "0")){
+                    const shape = snap.X == "0" ? "X" : "O";
+                    const least = true;
+                    clickedShape(shape, least);
                 }
                 snap.state.split("").forEach((element, ind) => {
-                    boxes[ind].innerHTML = element == '1' ? 'O' : element == '2' ? 'X' : '';
-                    
+                    boxes[ind].innerHTML = element == "1" ? "O" : element == "2" ? "X" : "";
                 });
+                const x = 0;
+                if(x){
+                    console.log("bruh w tę grę");
+                }
+                switch(snap.last_turn){
+                    case "1":
+                        xo == "X" ? move.innerHTML = "Twój ruch" : move.innerHTML = "Czekaj na ruch przeciwnika";
+                    break;
+                    
+                    case "2":
+                        xo == "O" ? move.innerHTML = "Twój ruch" : move.innerHTML = "Czekaj na ruch przeciwnika";
+                    break;
+                }
             })
         }
-        setInterval(refresh, 800);
+        setInterval(refresh, 500);
 
 
-        function clickedShape(shape){
+        function clickedShape(shape, secondShape){
             refresh({selected: shape});
-            header.innerHTML = `Grasz jako ${shape}.`;
+            if(secondShape){
+                header.innerHTML = `Pozostają Ci ${shape}.`;
+            }
+            else{
+                header.innerHTML = `Grasz jako ${shape}.`;
+            }
             xo = shape;
         }
 
-
-        o.addEventListener("click", ()=>clickedShape('O'));         
-        x.addEventListener("click", ()=>clickedShape('X'));  
+        o.addEventListener("click", ()=>clickedShape("O"));         
+        x.addEventListener("click", ()=>clickedShape("X"));  
 
 
         boxes = new Array(9).fill(0).map((el, ind) =>{

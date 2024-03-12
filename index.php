@@ -32,10 +32,7 @@ $conn = @mysqli_connect("localhost", "root", "", "tictactoe");
     }
 
     if(isset($_POST["position"])){
-        if($row['O'] == "0" || $row['X'] == "0"){
-            exit;
-        }
-        else{
+        if(!$row['O'] == "0" || !$row['X'] == "0"){
             $pos = intval($_POST["position"]);
             $xo = $row['O'] == $ssid ? '1' : '2';
             if($row['last_turn'] != $xo){
