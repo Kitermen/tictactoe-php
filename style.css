@@ -1,0 +1,32 @@
+*{
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-weight: bold;
+    box-sizing: border-box;
+}
+
+h1{
+    font-size: 35px;
+}
+
+h2{
+    margin-bottom: 70px;
+}
+
+.game{
+    max-width: 320px;
+    display: flex;
+    flex-wrap: wrap;
+    position: absolute;
+    left: 50%;
+    margin-left: -160px;
+}
+
+div.plate{
+    min-width: 100px;
+    min-height: 100px;
+    border: 2px solid black;
+    padding-top: 30px;
+    font-size: 35px;
+    text-align: center;
+    cursor: pointer;
+}
