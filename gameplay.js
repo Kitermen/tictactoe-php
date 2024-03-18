@@ -57,7 +57,7 @@ const x = document.getElementById("x");
                 || (mark[1] == mark[4] && mark[4] == mark[7] && mark[1] != "0") || (mark[2] == mark[5] && mark[5] == mark[8] && mark[2] != "0")
                 || (mark[0] == mark[4] && mark[4] == mark[8] && mark[0] != "0") || (mark[2] == mark[4] && mark[4] == mark[6] && mark[2] != "0")){
                     removeEventListeners()
-                    move.innerHTML = "<img alt='randyyy' src='./randy.gif'>";
+                    move.innerHTML = "";
 
                     snap.last_turn == "1" ? header.innerHTML = `Zwyciężają kółka.` : header.innerHTML = `Zwyciężają krzyżyki.`;
                     const doscTego = clearInterval(render);
