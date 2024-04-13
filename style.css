@@ -12,6 +12,10 @@ h2{
     margin-bottom: 70px;
 }
 
+span{
+    cursor: pointer;
+}
+
 .game{
     max-width: 320px;
     display: flex;
@@ -28,5 +32,20 @@ div.plate{
     padding-top: 30px;
     font-size: 35px;
     text-align: center;
+    cursor: pointer;
+}
+
+.reset-button{
+    width: 200px;
+    height: 40px;
+    text-align: center;
+    font-size: 24px;
+    border: 3px solid black;
+    border-radius: 10px;
+    background-color: whitesmoke;
+    padding-top: 3px;
+    position: absolute;
+    left: 50%;
+    margin: 350px 0px 0px -106px;
     cursor: pointer;
 }

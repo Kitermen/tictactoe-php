@@ -1,7 +1,9 @@
 const x = document.getElementById("x");
-        const o = document.getElementById("o");
-        const header = document.getElementById("header");
-        const move = document.getElementById("move_alert");
+const o = document.getElementById("o");
+const header = document.getElementById("header");
+const move = document.getElementById("move_alert");
+const reset = document.querySelector(".reset-button");
+
 
         let xo = null, boxes;
 
@@ -80,7 +82,13 @@ const x = document.getElementById("x");
 
         o.addEventListener("click", ()=>clickedShape("O"));         
         x.addEventListener("click", ()=>clickedShape("X"));  
-
+        reset.addEventListener("click", (e)=>{
+            fetch("./reset.php");
+            location.reload();
+        });
+        window.addEventListener("load", (e)=>{
+            fetch("./reset.php");
+        });
 
         boxes = new Array(9).fill(0).map((el, ind) => {
             const div = document.getElementById(ind + 1);
