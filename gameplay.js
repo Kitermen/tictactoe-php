@@ -1,3 +1,5 @@
+//hosting --- kitae.ct8.pl/ttt/index.html
+
 const x = document.getElementById("x");
 const o = document.getElementById("o");
 const header = document.getElementById("header");
@@ -34,6 +36,7 @@ const reset = document.querySelector(".reset-button");
             .then(snap => {
                 console.log(snap);
                 console.log(xo);
+                console.log("AA");
                 if(!xo && (snap.X != "0" || snap.O != "0") && !(snap.X == "0" && snap.O == "0")){
                     const shape = snap.X == "0" ? "X" : "O";
                     const least = true;
@@ -54,19 +57,34 @@ const reset = document.querySelector(".reset-button");
                 }
 
                 let mark = snap.state;
+                let markArray = mark.split("");
+                let drawFlag = true;
+                markArray.forEach((plate)=>{
+                    if(plate == "0") drawFlag = false;
+                })
                 if((mark[0] == mark[1] && mark[1] == mark[2] && mark[0] != "0") || (mark[3] == mark[4] && mark[4] == mark[5] && mark[3] != "0")
                 || (mark[6] == mark[7] && mark[7] == mark[8] && mark[6] != "0") || (mark[0] == mark[3] && mark[3] == mark[6] && mark[0] != "0") 
                 || (mark[1] == mark[4] && mark[4] == mark[7] && mark[1] != "0") || (mark[2] == mark[5] && mark[5] == mark[8] && mark[2] != "0")
                 || (mark[0] == mark[4] && mark[4] == mark[8] && mark[0] != "0") || (mark[2] == mark[4] && mark[4] == mark[6] && mark[2] != "0")){
                     removeEventListeners()
                     move.innerHTML = "";
-
                     snap.last_turn == "1" ? header.innerHTML = `Zwyciężają kółka.` : header.innerHTML = `Zwyciężają krzyżyki.`;
                     const doscTego = clearInterval(render);
                 }
+                else if(drawFlag == true){
+                    let markArray = mark.split("");
+                    markArray.forEach((plate)=>{
+                        if(plate != "0"){
+                            removeEventListeners()
+                            move.innerHTML = "";
+                            header.innerHTML = "OGŁASZAM REMIS!!!";
+                            const doscTego = clearInterval(render);
+                        }
+                    })
+                }
             })
         }
-        const render = setInterval(refresh, 500);
+        const render = setInterval(refresh, 400);
 
 
         function clickedShape(shape, secondShape){
